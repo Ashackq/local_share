@@ -1,0 +1,6 @@
+src
+templates
+go.mod
+go.sum
+sharit_server.exe
+sharit_server.go
