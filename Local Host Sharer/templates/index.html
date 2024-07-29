@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Local File Share</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .list_object {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        padding: 1rem;
+        position: relative;
+        border-bottom: 1px solid #ddd;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      a {
+        text-decoration: none;
+        color: #333;
+      }
+
+      a[href^="/v1/api/delete/"] {
+        color: red;
+        position: absolute;
+        right: 10px;
+      }
+
+      a[href^="/v1/api/download/"] {
+        color: green;
+        position: absolute;
+        right: 70px;
+      }
+      span {
+        position: absolute;
+        right: 60px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      input[type="file"],
+      button {
+        padding: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      input[type="file"] {
+        background-color: #f0f0f0;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      /* Media query for smaller screens */
+      @media (max-width: 768px) {
+        /* Adjust styles for smaller screens */
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Akash's Local File Share</h1>
+    <ul id="file-list">
+      {{ range .Files }}
+      <li class="list_object">
+        {{ .Name }} <a href="/v1/api/download/{{ .Name }}">Download</a>
+        <span>|</span>
+        <a
+          href="/v1/api/delete/{{ .Name }}"
+          data-method="delete"
+          onclick="window.location.reload()"
+          >Delete</a
+        >
+      </li>
+      {{ end }}
+    </ul>
+
+    <form action="/v1/api/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" id="file" />
+      <button type="submit">Share File</button>
+    </form>
+
+    <script>
+      $(document).ready(function () {
+        $('a[data-method="delete"]').click(function (event) {
+          event.preventDefault();
+          var url = $(this).attr("href");
+          $.ajax({
+            url: url,
+            type: "DELETE",
+            success: function (response) {
+              // Handle successful deletion
+              console.log("Item deleted successfully");
+            },
+            error: function (error) {
+              // Handle error
+              console.error("Error deleting item:", error);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
